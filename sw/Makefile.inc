@@ -88,17 +88,17 @@ INCLUDE_FLAGS=$(addprefix -I,$(SW_DRIVER_INCLUDE_PATHS))
 
 
 print-driver-paths:
-	$(Q)echo "\tDrivers in use from common sw path"; echo;
+	$(Q)echo -e "\tDrivers in use from common sw path"; echo;
 	@echo $(COMMON_SW_DRIVERS); echo; echo
-	$(Q)echo "\tDrivers in use from board sw path"; echo;
+	$(Q)echo -e "\tDrivers in use from board sw path"; echo;
 	@echo $(BOARD_SPECIFIC_DRIVERS); echo; echo;
-	$(Q)echo "\tCommon sw drivers without board drivers"; echo;
+	$(Q)echo -e "\tCommon sw drivers without board drivers"; echo;
 	@echo $(COMMON_SW_DRIVERS_WITHOUT_BOARD_DRIVERS); echo; echo;
-	$(Q)echo "\tAll drivers and their paths"; echo;
+	$(Q)echo -e "\tAll drivers and their paths"; echo;
 	@echo $(SW_DRIVER_PATHS); echo; echo
 
 print-include-paths:
-	$(Q)echo "\tSoftware include paths"; echo;
+	$(Q)echo -e "\tSoftware include paths"; echo;
 	@echo $(INCLUDE_FLAGS); echo; echo
 
 # If BOARD_PATH isn't set, then we're not compiling for a board, so use the
@@ -247,13 +247,13 @@ SW_TESTS_SUBDIRS +=$(shell for test in $(BOARD_SW_TESTS); do ls -d $(BOARD_PATH)
 endif
 
 print-sw-tests:
-	$(Q)echo; echo "\tSoftware tests"; echo;
+	$(Q)echo; echo -e "\tSoftware tests"; echo;
 	$(Q)echo $(COMMON_SW_TESTS); echo
-	$(Q)echo; echo "\tSoftware tests in board path (if any)"; echo;
+	$(Q)echo; echo -e "\tSoftware tests in board path (if any)"; echo;
 	$(Q)echo $(BOARD_SW_TESTS); echo
 
 print-sw-tests-subdirs:
-	$(Q)echo; echo "\tSoftware tests subdirs"; echo;
+	$(Q)echo; echo -e "\tSoftware tests subdirs"; echo;
 	$(Q)echo $(SW_TESTS_SUBDIRS); echo
 
 # This relies on the local clean rule of each makefile

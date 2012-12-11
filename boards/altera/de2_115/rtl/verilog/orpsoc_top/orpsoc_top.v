@@ -89,6 +89,9 @@ module orpsoc_top
 `ifdef GPIO0
     gpio0_io,
 `endif
+`ifdef LED
+	led_o,
+`endif
   
 `ifdef ETH0
  `ifdef SMII0
@@ -198,6 +201,10 @@ module orpsoc_top
 `ifdef GPIO0
    inout [gpio0_io_width-1:0] gpio0_io;   
 `endif 
+`ifdef LED
+	output [7:0] led_o;
+`endif
+
 `ifdef ETH0
  `ifdef SMII0   
    output 		      eth0_smii_sync_pad_o, eth0_smii_tx_pad_o;
@@ -575,7 +582,21 @@ module orpsoc_top
    wire 			     wbs_d_gpio0_ack_o;
    wire 			     wbs_d_gpio0_err_o;
    wire 			     wbs_d_gpio0_rty_o;
-   
+
+   // led wires
+   wire [31:0] 			     wbs_d_led_adr_i;
+   wire [7:0] 			     wbs_d_led_dat_i;
+//   wire [3:0] 			     wbs_d_led_sel_i;
+   wire 			     wbs_d_led_we_i;
+   wire 			     wbs_d_led_cyc_i;
+   wire 			     wbs_d_led_stb_i;
+   wire [2:0] 			     wbs_d_led_cti_i;
+   wire [1:0] 			     wbs_d_led_bte_i;   
+   wire [7:0] 			     wbs_d_led_dat_o;   
+   wire 			     wbs_d_led_ack_o;
+   wire 			     wbs_d_led_err_o;
+   wire 			     wbs_d_led_rty_o;
+      
    // flashROM wires
    wire [31:0] 				  wbs_d_flashrom_adr_i;
    wire [flashrom_wb_data_width-1:0] 	  wbs_d_flashrom_dat_i;
@@ -705,7 +726,7 @@ module orpsoc_top
       .wbm0_err_i			(wbm_d_or12_err_i),
       .wbm0_rty_i			(wbm_d_or12_rty_i),
 
-      // Master 0
+      // Master 1
       // Inputs to arbiter from master
       .wbm1_adr_o			(wbm_d_dbg_adr_o),
       .wbm1_dat_o			(wbm_d_dbg_dat_o),
@@ -955,6 +976,18 @@ module orpsoc_top
       .wbs11_err_o			(wbs_d_usb1_err_o),
       .wbs11_rty_o			(wbs_d_usb1_rty_o),
 
+      .wbs12_adr_i			(wbs_d_led_adr_i),
+      .wbs12_dat_i			(wbs_d_led_dat_i),
+      .wbs12_we_i			(wbs_d_led_we_i),
+      .wbs12_cyc_i			(wbs_d_led_cyc_i),
+      .wbs12_stb_i			(wbs_d_led_stb_i),
+      .wbs12_cti_i			(wbs_d_led_cti_i),
+      .wbs12_bte_i			(wbs_d_led_bte_i),
+      .wbs12_dat_o			(wbs_d_led_dat_o),
+      .wbs12_ack_o			(wbs_d_led_ack_o),
+      .wbs12_err_o			(wbs_d_led_err_o),
+      .wbs12_rty_o			(wbs_d_led_rty_o),
+
       // Clock, reset inputs
       .wb_clk			(wb_clk),
       .wb_rst			(wb_rst));
@@ -974,6 +1007,7 @@ module orpsoc_top
    defparam arbiter_bytebus0.slave9_adr = bbus_arb_slave9_adr;
    defparam arbiter_bytebus0.slave10_adr = bbus_arb_slave10_adr;
    defparam arbiter_bytebus0.slave11_adr = bbus_arb_slave11_adr;
+   defparam arbiter_bytebus0.slave12_adr = bbus_arb_slave12_adr;
 
 
 `ifdef GENERIC_JTAG_TAP
@@ -2577,6 +2611,33 @@ module orpsoc_top
    assign wbs_d_gpio0_rty_o = 0;
    ////////////////////////////////////////////////////////////////////////
 `endif // !`ifdef GPIO0
+
+`ifdef LED
+	led led0(
+		.wb_clk(wb_clk),
+		.wb_rst(wb_rst),
+		// Wishbone slave interface
+		.wb_adr_i				(wbs_d_led_adr_i),
+		.wb_dat_i				(wbs_d_led_dat_i),
+		.wb_we_i				(wbs_d_led_we_i),
+		.wb_cyc_i				(wbs_d_led_cyc_i),
+		.wb_stb_i				(wbs_d_led_stb_i),
+		.wb_cti_i				(wbs_d_led_cti_i),
+		.wb_bte_i				(wbs_d_led_bte_i),
+		.wb_dat_o				(wbs_d_led_dat_o),
+		.wb_ack_o				(wbs_d_led_ack_o),
+		.wb_err_o				(wbs_d_led_err_o),
+		.wb_rty_o				(wbs_d_led_rty_o),
+
+		.led_o(led_o)
+	);
+
+`else
+	assign wbs_d_led_dat_o = 0;
+	assign wbs_d_led_ack_o = 0;
+	assign wbs_d_led_err_o = 0;
+	assign wbs_d_led_rty_o = 0;
+`endif // !`ifdef LED
    
    ////////////////////////////////////////////////////////////////////////
    //

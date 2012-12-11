@@ -874,8 +874,8 @@ module arbiter_dbus
    assign wb_slave_sel[1] = wbm_adr_o[`WB_ARB_ADDR_MATCH_SEL] == slave1_adr;
    assign wb_slave_sel[2] = wbm_adr_o[`WB_ARB_ADDR_MATCH_SEL] == slave2_adr;      
    // Auto select last slave when others are not selected
-   assign wb_slave_sel[3] = !(wb_slave_sel_r[0] | wb_slave_sel_r[1] |
-			       wb_slave_sel_r[2]);
+   assign wb_slave_sel[3] = !(wb_slave_sel[0] | wb_slave_sel[1] |
+			       wb_slave_sel[2]);
 
 /*
 

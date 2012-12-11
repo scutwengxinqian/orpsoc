@@ -62,6 +62,7 @@
 `define GPIO0
 //`define ETH0
 //`define SDC_CONTROLLER
+`define LED
 
 // end of included module defines - keep this comment line here, scripts depend on it!!
 

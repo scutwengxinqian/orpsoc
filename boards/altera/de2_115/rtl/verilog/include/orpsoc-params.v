@@ -57,6 +57,9 @@ parameter spi2_wb_adr = 8'hb2;
 parameter spi2_wb_adr_width = 3;
 parameter wbs_d_spi2_data_width = 8;
 
+// LED params
+parameter led_wb_adr = 8'hb8;
+
 // i2c master slave params
 // Slave addresses
 parameter HV0_SADR  = 8'h44;
@@ -183,7 +186,7 @@ parameter dbus_arb_slave2_adr = sdc_wb_adr;
 //                           //
 ///////////////////////////////
 parameter bbus_arb_wb_addr_match_width = 8;
-parameter bbus_arb_wb_num_slaves = 12; // Update this when changing slaves!
+parameter bbus_arb_wb_num_slaves = 13; // Update this when changing slaves!
 // Slave addresses
 parameter bbus_arb_slave0_adr  = uart0_wb_adr;
 parameter bbus_arb_slave1_adr  = gpio0_wb_adr;
@@ -197,7 +200,7 @@ parameter bbus_arb_slave8_adr  = spi1_wb_adr;
 parameter bbus_arb_slave9_adr  = spi2_wb_adr; 
 parameter bbus_arb_slave10_adr = flashrom_wb_adr;
 parameter bbus_arb_slave11_adr = usb1_wb_adr;
-parameter bbus_arb_slave12_adr = 0 /* UNASSIGNED */;
+parameter bbus_arb_slave12_adr = led_wb_adr;
 parameter bbus_arb_slave13_adr = 0 /* UNASSIGNED */;
 parameter bbus_arb_slave14_adr = 0 /* UNASSIGNED */;
 parameter bbus_arb_slave15_adr = 0 /* UNASSIGNED */;

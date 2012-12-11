@@ -115,6 +115,7 @@ parameter boot_adr = `OR1200_BOOT_ADR;
 // Internal wires and regs
 //
 reg	[31:2]			pcreg_default;
+wire	[31:0]			pcreg_boot;
 reg				pcreg_select;
 reg	[31:2]			pcreg;
 reg	[31:0]			pc;
@@ -291,7 +292,7 @@ reg				wait_lsu;
 
    // select async. value for pcreg after reset - PC jumps to the address selected
    // after boot.
-   wire [31:0] pcreg_boot = boot_adr;
+   assign pcreg_boot = boot_adr;
 
    always @(pcreg_boot or pcreg_default or pcreg_select)
      if (pcreg_select)

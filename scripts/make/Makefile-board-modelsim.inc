@@ -137,6 +137,7 @@ work: modelsim_dut.scr
 	$(Q)if [ "$(RTL_VHDL_SRC)" != "" ]; then \
 		echo; echo "\t### Compiling VHDL design library ###"; \
 		echo; \
+		vmap altera_mf $(BACKEND_LIB) ;\
 		vcom -93 $(QUIET) $(RTL_VHDL_SRC); \
 	fi
 
