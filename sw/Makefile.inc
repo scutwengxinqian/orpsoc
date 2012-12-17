@@ -130,7 +130,7 @@ MARCH_FLAGS ?=-mhard-mul -mhard-div -msoft-float
 # All software div, mul and FPU
 #MARCH_FLAGS ?=-msoft-mul -msoft-div -msoft-float
 
-OR32_CFLAGS ?=-g -nostdlib -O2 $(MARCH_FLAGS) \
+OR32_CFLAGS ?=-g -nostdlib $(MARCH_FLAGS) \
 		$(INCLUDE_FLAGS) \
 		-I$(SW_ROOT)/lib/include \
 
