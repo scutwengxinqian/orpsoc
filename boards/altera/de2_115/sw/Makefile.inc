@@ -11,6 +11,7 @@ SW_ROOT=$(BOARD_SW_ROOT)/$(PROJ_ROOT)/sw
 # Set the BOARD to be the path within the board/ path of the project that goes
 # to this project.
 BOARD=altera/de2_115
+export BOARD
 
 # Set RTL_VERILOG_INCLUDE_DIR so software 
 RTL_VERILOG_INCLUDE_DIR=$(shell pwd)/$(BOARD_SW_ROOT)/../rtl/verilog/include

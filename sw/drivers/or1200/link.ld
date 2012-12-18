@@ -5,7 +5,7 @@ __DYNAMIC  =  0;
 MEMORY
 {
 	vectors : ORIGIN = 0, LENGTH = 0x1000
-	ram     : ORIGIN = 0x1000, LENGTH = (8M - 0x1000)
+	ram     : ORIGIN = 0x1000, LENGTH = (128M - 0x1000)
 }
 
 

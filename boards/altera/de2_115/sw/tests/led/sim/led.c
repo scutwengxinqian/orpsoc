@@ -5,7 +5,7 @@
 int main()
 {
 	int i, j;
-	REG8(LED_BASE) = 0X01010101;
+	REG8(LED_BASE) = 0x01;
 	while (1)
 	{
 		for(i=0;i<8;i++)

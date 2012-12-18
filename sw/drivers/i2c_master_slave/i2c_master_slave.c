@@ -161,20 +161,21 @@ int i2c_master_slave_deact_as_slave(int core)
 ************************************************************/
 int i2c_master_slave_master_start(int core, unsigned char addr, int read)
 {
+	do {
+		// Set address in transfer register
+		i2c_master_slave_write_reg(core, I2C_MASTER_SLAVE_TXR,
+					   (addr << 1) | read);
 
-	i2c_master_slave_wait_for_busy(core);
+		// Start and write the address
+		i2c_master_slave_write_reg(core, I2C_MASTER_SLAVE_CR,
+					   I2C_MASTER_SLAVE_CR_START |
+					   I2C_MASTER_SLAVE_CR_WRITE);
 
-	// Set address in transfer register
-	i2c_master_slave_write_reg(core, I2C_MASTER_SLAVE_TXR,
-				   (addr << 1) | read);
-
-	// Start and write the address
-	i2c_master_slave_write_reg(core, I2C_MASTER_SLAVE_CR,
-				   I2C_MASTER_SLAVE_CR_START |
-				   I2C_MASTER_SLAVE_CR_WRITE);
-
-	i2c_master_slave_wait_for_transfer(core);
-
+		i2c_master_slave_wait_for_transfer(core);
+	// If no ACK is returned, the Start bit and control byte must
+	// be re-sent.
+	} while (i2c_master_slave_read_reg(core, I2C_MASTER_SLAVE_SR) 
+			& I2C_MASTER_SLAVE_SR_RXACK);
 	return 0;
 }
 
