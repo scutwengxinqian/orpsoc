@@ -86,7 +86,7 @@ char uart_get_msr(int);
  * These are the definitions for the Interrupt Identification Register
  */
 #define UART_IIR_NO_INT	0x01	/* No interrupts pending */
-#define UART_IIR_ID	0x06	/* Mask for the interrupt ID */
+#define UART_IIR_ID	0x0e	/* Mask for the interrupt ID */
 
 #define UART_IIR_MSI	0x00	/* Modem status interrupt */
 #define UART_IIR_THRI	0x02	/* Transmitter holding register empty */

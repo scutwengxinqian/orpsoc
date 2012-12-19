@@ -579,8 +579,13 @@ module orpsoc_testbench;
       );
    
    // Loopback UART lines
-   assign uart0_srx_pad_i = uart0_stx_pad_o;
-   
+//   assign uart0_srx_pad_i = uart0_stx_pad_o;
+
+	uart_stim #(
+		.uart_baudrate_period_ns(8680)
+		) // 115200 baud = period 8.68uS
+	uart0_stim(.clk(clk), .uart_rx(uart0_srx_pad_i));
+	
 `endif //  `ifdef UART0
 
 `ifdef USB0

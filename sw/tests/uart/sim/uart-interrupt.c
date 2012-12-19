@@ -46,7 +46,7 @@ void uart0_tx_buffer_init(void)
 /* Add characters to be transmitted */
 void uart0_tx_buffer_add(int numchars, char* buf)
 {
-  // If we're not currently transmitting, ie. nothign in the buffer, then
+  // If we're not currently transmitting, ie. nothing in the buffer, then
   // we should transmit after this.
   int start_tx = (numchars && !uart0_tx_ctrl.buf_count);
   while(numchars)

@@ -37,7 +37,7 @@
 //
 // Enable verbose report l.nops (to both general log file and stdout)
 //
-`define OR1200_MONITOR_VERBOSE_NOPS
+//`define OR1200_MONITOR_VERBOSE_NOPS
 
 //
 // Enable monitoring of control and execution flow (experimental)

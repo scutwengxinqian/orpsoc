@@ -52,21 +52,21 @@ module uart_stim(clk, uart_rx);
    parameter uart_baudrate_period_ns = 8680;
 
    // Uart Stim file - we include it
-   parameter stim_file = "uart0_stim.v";
+//   parameter stim_file = "uart0_stim.v";
    
    // Something to trigger the task
    reg [7:0]  next_byte;
-   parameter len = 11; // Number of chars in string
+   parameter len = 5; // Number of chars in string
    reg [(len*8)-1:0] uart_string;
    integer 	i;
 
-   /*
+
    initial
      begin
 	uart_rx = 1;	
-	uart_string = "dhry 100\n!\n";
+	uart_string = "INPUT";
 	
-	#12_000_000;       	
+	#4_000_000;       	
 	for(i=0;i<len;i=i+1)
 	  begin
 	     uart_tx_byte(uart_string[(len*8)-1:(len*8)-8]);
@@ -75,7 +75,7 @@ module uart_stim(clk, uart_rx);
 	     uart_string = {uart_string[(len*8)-9:0],8'h00};
 	  end
      end
-    */
+
    // Task to drive UART RX line (transmit a char) - 1 stop bit, no parity
    task uart_tx_byte;
     input [7:0] tx_byte;
