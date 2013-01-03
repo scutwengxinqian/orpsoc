@@ -60,7 +60,7 @@
 //`define USB0
 //`define USB1
 `define GPIO0
-//`define ETH0
+`define ETH0
 //`define SDC_CONTROLLER
 `define LED
 
@@ -103,7 +103,7 @@
 `ifdef ETH0
 // Define ETH0_PHY_RST here or where ETH0 is defined to enable an active-low
 // reset output to the PHY if it's possible.
-// `define ETH0_PHY_RST
+`define ETH0_PHY_RST
 `endif
 
 `ifdef ETH_CLK

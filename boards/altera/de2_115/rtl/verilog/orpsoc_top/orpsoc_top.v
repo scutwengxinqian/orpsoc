@@ -224,6 +224,10 @@ module orpsoc_top
    output 		      eth0_mdc_pad_o;
    inout 		      eth0_md_pad_io;
 `endif //  `ifdef ETH0
+`ifdef ETH0_PHY_RST
+   output                     eth0_rst_n_o;
+`endif
+
 `ifdef ETH_CLK
    input 		      eth_clk_pad_i;
 `endif
