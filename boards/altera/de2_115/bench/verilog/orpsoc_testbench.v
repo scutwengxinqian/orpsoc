@@ -42,31 +42,16 @@
 module orpsoc_testbench;
 
    // Clock and reset signal registers
-   reg clk = 0;
-   reg rst_n = 1; // Active LOW
+   wire clk = 0;
+   wire rst_n = 1; // Active LOW
    reg eth_clk = 0;
    
-   always
-     #((`BOARD_CLOCK_PERIOD)/2) clk <= ~clk;
-
 `ifdef ETH_CLK
    always
      #((`ETHERNET_CLOCK_PERIOD)/2) eth_clk <= ~eth_clk;
 `endif
 
    
-   // Reset, ACTIVE LOW
-   initial 
-     begin
-	#1;
-	repeat (32) @(negedge clk)
-	  rst_n <= 1;
-	repeat (32) @(negedge clk)
-	  rst_n <= 0;
-	repeat (32) @(negedge clk)
-	  rst_n <= 1;
-     end
-
    // Include design parameters file
 `include "orpsoc-params.v"
 
@@ -78,6 +63,7 @@ module orpsoc_testbench;
    wire 		     tck_pad_i;
    wire 		     tms_pad_i;
    wire 		     tdi_pad_i;
+   wire                      trstn_pad_i;
 `endif   
 `ifdef UART0
    wire 		     uart0_stx_pad_o;
@@ -159,6 +145,7 @@ module orpsoc_testbench;
       .tck_pad_i			(tck_pad_i),
       .tdi_pad_i			(tdi_pad_i),
       .tdo_pad_o			(tdo_pad_o),
+      .trstn_pad_i                      (trstn_pad_i),
 `endif
 `ifdef VERSATILE_SDRAM
       .sdram_dq_pad_io			(sdram_dq_pad_io),            
@@ -170,6 +157,7 @@ module orpsoc_testbench;
       .sdram_we_pad_o			(sdram_we_pad_o),
       .sdram_dqm_pad_o			(sdram_dqm_pad_o),
       .sdram_cke_pad_o			(sdram_cke_pad_o),
+      .sdram_clk_pad_o                  (),
 `endif
 `ifdef UART0      
       .uart0_stx_pad_o			(uart0_stx_pad_o),
@@ -232,6 +220,9 @@ module orpsoc_testbench;
 `ifdef GPIO0
       .gpio0_io				(gpio0_io),
 `endif
+`ifdef LED
+      .led_o(),
+`endif
 `ifdef ETH0
  `ifdef SMII0      
       .eth0_smii_sync_pad_o                  (eth0_smii_sync_pad_o),
@@ -290,12 +281,15 @@ module orpsoc_testbench;
 `ifdef JTAG_DEBUG   
  `ifdef VPI_DEBUG
    // Debugging interface
-   vpi_debug_module vpi_dbg
+   dbg_comm_vpi vpi_dbg
      (
-      .tms(tms_pad_i), 
-      .tck(tck_pad_i), 
-      .tdi(tdi_pad_i), 
-      .tdo(tdo_pad_o)
+	.SYS_CLK(clk),
+	.SYS_RSTN(rst_n),
+	.P_TMS(tms_pad_i),
+	.P_TCK(tck_pad_i),
+	.P_TRST(trstn_pad_i),
+	.P_TDI(tdi_pad_i),
+	.P_TDO(tdo_pad_o)
       );
  `else   
    // If no VPI debugging, tie off JTAG inputs

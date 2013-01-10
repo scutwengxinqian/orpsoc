@@ -53,17 +53,17 @@
 
 `ifdef RTL_SIM
  `ifdef ethmac_IS_GATELEVEL
-  `define ETH_MODER_TXEN_BIT `ETH_MODER_PATH.r_TxEn;
-  `define ETH_MODER_RXEN_BIT `ETH_MODER_PATH.r_RxEn;
+  `define ETH_MODER_TXEN_BIT `ETH_MODER_PATH.r_TxEn
+  `define ETH_MODER_RXEN_BIT `ETH_MODER_PATH.r_RxEn
  `else
-  `define ETH_MODER_TXEN_BIT `ETH_MODER_PATH.DataOut[1];
-  `define ETH_MODER_RXEN_BIT `ETH_MODER_PATH.DataOut[0];
+  `define ETH_MODER_TXEN_BIT `ETH_MODER_PATH.DataOut[1]
+  `define ETH_MODER_RXEN_BIT `ETH_MODER_PATH.DataOut[0]
  `endif
 `endif
 
 `ifdef GATE_SIM
- `define ETH_MODER_TXEN_BIT `ETH_MODER_PATH.r_TxEn;
- `define ETH_MODER_RXEN_BIT `ETH_MODER_PATH.r_RxEn;
+ `define ETH_MODER_TXEN_BIT `ETH_MODER_PATH.r_TxEn
+ `define ETH_MODER_RXEN_BIT `ETH_MODER_PATH.r_RxEn
 `endif
 
 reg [15:0] eth_stim_rx_packet_length;

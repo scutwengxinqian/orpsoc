@@ -47,11 +47,11 @@ VSIM_ARGS+=  -suppress 7 -suppress 3009 -suppress 8598 -c $(QUIET) -do "set StdA
 endif
 
 # VPI debugging interface set up
-VPI_SRC_C_DIR=$(COMMON_BENCH_VERILOG_DIR)/vpi/c
+VPI_SRC_C_DIR=$(BOARD_BENCH_VERILOG_DIR)/ads_vpi/sim_lib
 VPI_SRCS=$(shell ls $(VPI_SRC_C_DIR)/*.[ch])
 
 # Modelsim VPI compile variables
-MODELTECH_VPILIB=msim_jp_vpi.sl
+MODELTECH_VPILIB=jp-io-vpi.so
 
 # Modelsim VPI settings
 ifeq ($(VPI), 1)
@@ -61,7 +61,7 @@ endif
 
 # Rule to make the VPI library for modelsim
 $(VPI_SRC_C_DIR)/$(MODELTECH_VPILIB): $(VPI_SRCS)
-	$(MAKE) -C $(VPI_SRC_C_DIR) $(MODELTECH_VPILIB)
+	$(MAKE) -C $(VPI_SRC_C_DIR)
 
 #
 # Script generation rules

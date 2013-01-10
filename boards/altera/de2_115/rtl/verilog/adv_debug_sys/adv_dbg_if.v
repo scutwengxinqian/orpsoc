@@ -255,7 +255,7 @@ end
 
 always @ (module_id_reg)
 begin
-	module_selects <= `DBG_TOP_MODULE_ID_LENGTH'h0;
+	module_selects <= `DBG_TOP_MAX_MODULES'h0;
 	module_selects[module_id_reg] <= 1'b1;
 end
 

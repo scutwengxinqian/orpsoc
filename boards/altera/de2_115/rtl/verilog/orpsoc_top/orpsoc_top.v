@@ -40,7 +40,7 @@
 module orpsoc_top
   (
 `ifdef GENERIC_JTAG_TAP
-    tdo_pad_o, tms_pad_i, tck_pad_i, tdi_pad_i,
+    tdo_pad_o, tms_pad_i, tck_pad_i, tdi_pad_i, trstn_pad_i,
 `endif
 `ifdef VERSATILE_SDRAM
     sdram_ba_pad_o,sdram_a_pad_o,sdram_cs_n_pad_o, sdram_ras_pad_o, 
@@ -129,6 +129,7 @@ module orpsoc_top
    input  tms_pad_i;
    input  tck_pad_i;
    input  tdi_pad_i;
+   input  trstn_pad_i;
 `endif
 `ifdef VERSATILE_SDRAM
    output [1:0] sdram_ba_pad_o;
@@ -1031,25 +1032,24 @@ module orpsoc_top
 					  jtag_tap_upate_dr, jtag_tap_capture_dr;
    wire					  test_logic_reset;
 
-   assign test_logic_reset = wb_rst;
-   
    //
    // Instantiation
    //
 
-   jtag_tap jtag_tap0
+   tap_top jtag_tap0
      (
       // Ports to pads
       .tdo_pad_o			(tdo_pad_o),
       .tms_pad_i			(tms_pad_i),
-      .tck_pad_i			(dbg_tck),
-      .trst_pad_i			(async_rst),
+      .tck_pad_i			(tck_pad_i),
+      .trstn_pad_i			(trstn_pad_i),
       .tdi_pad_i			(tdi_pad_i),
       
       .tdo_padoe_o			(tdo_padoe_o),
       
-      .tdo_o				(jtag_tap_tdo),
-
+      .tdi_o				(jtag_tap_tdo),
+      .test_logic_reset_o               (test_logic_reset_o),
+      .run_test_idle_o                  (),
       .shift_dr_o			(jtag_tap_shift_dr),
       .pause_dr_o			(jtag_tap_pause_dr),
       .update_dr_o			(jtag_tap_update_dr),
@@ -1061,9 +1061,9 @@ module orpsoc_top
       .debug_select_o			(dbg_if_select),
 
       
-      .bs_chain_tdi_i			(1'b0),
-      .mbist_tdi_i			(1'b0),
-      .debug_tdi_i			(dbg_if_tdo)
+      .bs_chain_tdo_i			(1'b0),
+      .mbist_tdo_i			(1'b0),
+      .debug_tdo_i			(dbg_if_tdo)
       
       );
    
@@ -1298,8 +1298,10 @@ module orpsoc_top
 
       // Wishbone debug master
       .wb_clk_i				(wb_clk),
+      .wb_rst_i                         (wb_rst),
       .wb_dat_i				(wbm_d_dbg_dat_i),
       .wb_ack_i				(wbm_d_dbg_ack_i),
+      .wb_cab_o                         (),
       .wb_err_i				(wbm_d_dbg_err_i),
       .wb_adr_o				(wbm_d_dbg_adr_o),
       .wb_dat_o				(wbm_d_dbg_dat_o),
