@@ -42,9 +42,9 @@
 module orpsoc_testbench;
 
    // Clock and reset signal registers
-   wire clk = 0;
-   wire rst_n = 1; // Active LOW
-   reg eth_clk = 0;
+   wire clk;
+   wire rst_n; // Active LOW
+   reg eth_clk;
    
 `ifdef ETH_CLK
    always
