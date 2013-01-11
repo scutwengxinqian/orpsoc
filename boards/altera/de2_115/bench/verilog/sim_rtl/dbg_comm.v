@@ -71,8 +71,8 @@
 
 
 
-`define GDB_IN	"e:/tmp/gdb_in.dat"
-`define GDB_OUT	"e:/tmp/gdb_out.dat"
+`define GDB_IN	"/tmp/gdb_in.dat"
+`define GDB_OUT	"/tmp/gdb_out.dat"
 
 
 module dbg_comm(

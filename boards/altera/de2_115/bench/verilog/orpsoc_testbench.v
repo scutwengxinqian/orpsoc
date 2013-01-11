@@ -42,9 +42,9 @@
 module orpsoc_testbench;
 
    // Clock and reset signal registers
-   wire clk = 0;
-   wire rst_n = 1; // Active LOW
-   reg eth_clk = 0;
+   wire clk;
+   wire rst_n; // Active LOW
+   reg eth_clk;
    
 `ifdef ETH_CLK
    always
@@ -293,9 +293,16 @@ module orpsoc_testbench;
       );
  `else   
    // If no VPI debugging, tie off JTAG inputs
-   assign tdi_pad_i = 1;
-   assign tck_pad_i = 0;
-   assign tms_pad_i = 1;
+   dbg_comm dbg_comm_0
+     (
+	.SYS_CLK(clk),
+	.SYS_RSTN(rst_n),
+	.P_TMS(tms_pad_i),
+	.P_TCK(tck_pad_i),
+	.P_TRST(trstn_pad_i),
+	.P_TDI(tdi_pad_i),
+	.P_TDO(tdo_pad_o)
+      );
  `endif // !`ifdef VPI_DEBUG_ENABLE
 `endif //  `ifdef JTAG_DEBUG
    
