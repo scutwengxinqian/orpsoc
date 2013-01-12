@@ -1048,7 +1048,7 @@ module orpsoc_top
       .tdo_padoe_o			(tdo_padoe_o),
       
       .tdi_o				(jtag_tap_tdo),
-      .test_logic_reset_o               (test_logic_reset_o),
+      .test_logic_reset_o               (test_logic_reset),
       .run_test_idle_o                  (),
       .shift_dr_o			(jtag_tap_shift_dr),
       .pause_dr_o			(jtag_tap_pause_dr),
