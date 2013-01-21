@@ -243,7 +243,7 @@ module arbiter_bytebus
    wbs12_ack_o,
    wbs12_err_o,
    wbs12_rty_o,
-/*
+
     // Slave fourteen
     // Wishbone Slave interface
     wbs13_adr_i,
@@ -257,7 +257,7 @@ module arbiter_bytebus
     wbs13_ack_o,
     wbs13_err_o,
     wbs13_rty_o,
-
+/*
     // Slave fifteen
     // Wishbone Slave interface
     wbs14_adr_i,
@@ -587,7 +587,7 @@ module arbiter_bytebus
    input 		      wbs12_ack_o;
    input 		      wbs12_err_o;
    input 		      wbs12_rty_o;
-/*
+
    // Wishbone Slave interface
    output [wb_adr_width-1:0] wbs13_adr_i;
    output [wbs_dat_width-1:0] wbs13_dat_i;
@@ -601,7 +601,7 @@ module arbiter_bytebus
    input 		     wbs13_err_o;
    input 		     wbs13_rty_o;
 
-
+/*
    // Wishbone Slave interface
    output [wb_adr_width-1:0] wbs14_adr_i;
    output [wbs_dat_width-1:0] wbs14_dat_i;
@@ -800,15 +800,15 @@ module arbiter_bytebus
    assign wb_slave_sel[10] = wbm_adr_o[`WB_ARB_ADDR_MATCH_SEL] == slave10_adr;
    assign wb_slave_sel[11] = wbm_adr_o[`WB_ARB_ADDR_MATCH_SEL] == slave11_adr;
    assign wb_slave_sel[12] = wbm_adr_o[`WB_ARB_ADDR_MATCH_SEL] == slave12_adr;
-      /*      
    assign wb_slave_sel[13] = wbm_adr_o[`WB_ARB_ADDR_MATCH_SEL] == slave13_adr;
+/*      
    assign wb_slave_sel[14] = wbm_adr_o[`WB_ARB_ADDR_MATCH_SEL] == slave14_adr;
    assign wb_slave_sel[15] = wbm_adr_o[`WB_ARB_ADDR_MATCH_SEL] == slave15_adr;
    assign wb_slave_sel[16] = wbm_adr_o[`WB_ARB_ADDR_MATCH_SEL] == slave16_adr;
    assign wb_slave_sel[16] = wbm_adr_o[`WB_ARB_ADDR_MATCH_SEL] == slave17_adr;
    assign wb_slave_sel[16] = wbm_adr_o[`WB_ARB_ADDR_MATCH_SEL] == slave18_adr;
    assign wb_slave_sel[16] = wbm_adr_o[`WB_ARB_ADDR_MATCH_SEL] == slave19_adr;
-   */
+*/
 
 
    // Assign master inputs to slaves and slave inputs for MUXing  back to master
@@ -993,7 +993,6 @@ module arbiter_bytebus
    assign wbs_err_o_mux_i[12] = wbs12_err_o & wb_slave_sel[12];
    assign wbs_rty_o_mux_i[12] = wbs12_rty_o & wb_slave_sel[12];
 
-/*
    // Slave 13 inputs
    assign wbs13_adr_i = wbm_adr_o;
    assign wbs13_dat_i = wbm_dat_o;
@@ -1008,6 +1007,7 @@ module arbiter_bytebus
    assign wbs_rty_o_mux_i[13] = wbs13_rty_o & wb_slave_sel[13];
 
 
+/*
    // Slave 14 inputs
    assign wbs14_adr_i = wbm_adr_o;
    assign wbs14_dat_i = wbm_dat_o;
@@ -1107,8 +1107,8 @@ module arbiter_bytebus
 		      wb_slave_sel[10] ? wbs_dat_o_mux_i[10] :
 		      wb_slave_sel[11] ? wbs_dat_o_mux_i[11] :
 		      wb_slave_sel[12] ? wbs_dat_o_mux_i[12] :
-			   /*
 		      wb_slave_sel[13] ? wbs_dat_o_mux_i[13] :
+			   /*
 		      wb_slave_sel[14] ? wbs_dat_o_mux_i[14] :
 		      wb_slave_sel[15] ? wbs_dat_o_mux_i[15] :
 		      wb_slave_sel[16] ? wbs_dat_o_mux_i[16] :
@@ -1130,8 +1130,8 @@ module arbiter_bytebus
 		      wbs_ack_o_mux_i[9]  |
 		      wbs_ack_o_mux_i[10] |
 		      wbs_ack_o_mux_i[11] |
-		      wbs_ack_o_mux_i[12] /* |
-		      wbs_ack_o_mux_i[13] |		      
+		      wbs_ack_o_mux_i[12] |
+		      wbs_ack_o_mux_i[13] /* |		      
 		      wbs_ack_o_mux_i[14] |
 		      wbs_ack_o_mux_i[15] |		      
 		      wbs_ack_o_mux_i[16] |
@@ -1154,8 +1154,8 @@ module arbiter_bytebus
 		      wbs_err_o_mux_i[9] |
 		      wbs_err_o_mux_i[10] |
 		      wbs_err_o_mux_i[11] |
-		      wbs_err_o_mux_i[12] |/*
-		      wbs_err_o_mux_i[13] |
+		      wbs_err_o_mux_i[12] |
+		      wbs_err_o_mux_i[13] |/*
 		      wbs_err_o_mux_i[14] |
 		      wbs_err_o_mux_i[15] |
 		      wbs_err_o_mux_i[16] |
@@ -1178,8 +1178,8 @@ module arbiter_bytebus
 		      wbs_rty_o_mux_i[9]  |
 		      wbs_rty_o_mux_i[10] |
 		      wbs_rty_o_mux_i[11] |
-		      wbs_rty_o_mux_i[12] /*|
-		      wbs_rty_o_mux_i[13] |
+		      wbs_rty_o_mux_i[12] |
+		      wbs_rty_o_mux_i[13] /*|
 		      wbs_rty_o_mux_i[14] |
 		      wbs_rty_o_mux_i[15] |		       		      
 		      wbs_rty_o_mux_i[16] |

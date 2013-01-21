@@ -18,8 +18,9 @@
 #ifndef PRELOAD_RAM
 //#define BOOTROM_SPI_FLASH
 //#define BOOTROM_GOTO_RESET
-#define BOOTROM_LOOP_AT_ZERO
+//#define BOOTROM_LOOP_AT_ZERO
 //#define BOOTROM_LOOP_IN_ROM
+#define BOOTROM_PARALLEL_FLASH
 #else
 #define BOOTROM_GOTO_RESET
 #endif
@@ -32,6 +33,7 @@
 //#define MT48LC16M16A2 // 32MB SDRAM part
 //#define MT48LC4M16A2 // 8MB SDRAM part
 
+#define FLASH_BASE 0xB9000000
 #define FLASHROM_BASE       0xcf000000
 #define FLASHROM_SIZE            0x100
 

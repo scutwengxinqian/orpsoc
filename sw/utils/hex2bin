@@ -1,0 +1,9 @@
+#!/usr/bin/perl
+binmode STDOUT;
+
+while(<>)
+{
+	# 'N' for big-endian, 'V' for little-endien
+	print pack "C", oct('0x'.$_) ;
+}
+

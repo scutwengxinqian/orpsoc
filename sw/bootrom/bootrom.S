@@ -38,9 +38,9 @@
 // as this software ends up as gates.
 	
 #include "board.h"
-
+#warning "BEGIN {{ bootrom.S }}"
 #ifdef BOOTROM_SPI_FLASH
-	
+#warning "BOOTROM_SPI_FLASH"
 	/* Assembly program to go into the boot ROM */
 	/* For use with simple_spi SPI master core and standard SPI flash
 	   interface-compatible parts (ST M25P16 for example.)*/
@@ -143,6 +143,7 @@ spi_xfer_poll:
 #endif
 
 #ifdef BOOTROM_GOTO_RESET
+#warning "BOOTROM_GOTO_RESET"
 	/* Jump to reset vector in the SDRAM */
 	l.movhi r0, 0
 	l.movhi r4, SDRAM_BASE
@@ -153,7 +154,7 @@ spi_xfer_poll:
 #endif	
 
 #ifdef BOOTROM_LOOP_AT_ZERO
-
+#warning "BOOTROM_LOOP_AT_ZERO"
 	/* Don't load app via SPI, instead just put an infinite loop into bottom
 	of memory and jump there.
 	*/
@@ -173,7 +174,7 @@ spi_xfer_poll:
 #endif
 
 #ifdef BOOTROM_LOOP_IN_ROM
-
+#warning "BOOTROM_LOOP_IN_ROM"
 	/* Don't load app via SPI, instead just put an infinite loop into bottom
 	of memory and jump there.
 	*/
@@ -183,3 +184,48 @@ spi_xfer_poll:
 	l.nop
 	l.nop 
 #endif
+
+#ifdef BOOTROM_PARALLEL_FLASH
+#warning "BOOTROM_PARALLEL_FLASH"
+// FLASH_BASE, SDRAM_BASE are defined in "board.h"
+
+boot_init:
+	l.movhi	r1, hi(FLASH_BASE)
+	l.movhi	r2, hi(SDRAM_BASE)
+
+load_size:
+/* size data is big endian */
+	l.lbz	r3, 0(r1)
+	l.slli	r4, r3, 24
+
+	l.lbz	r3, 1(r1)
+	l.slli	r3, r3, 16
+	l.or	r4, r4, r3
+
+	l.lbz	r3, 2(r1)
+	l.slli	r3, r3, 8
+	l.or	r4, r4, r3
+
+	l.lbz	r3, 3(r1)
+	l.or	r4, r4, r3
+/* now image size is in r4 */
+copy_data:
+	l.movhi	r5, 0
+next:
+	l.add	r6, r1, r5 /* load from r6 */
+	l.add	r7, r2, r5 /* store to r7 */
+	l.lbz	r3, 0(r6)
+	l.sb	0(r7), r3
+
+	l.addi	r5, r5, 1
+	l.sfgeu	r5, r4
+	l.bnf	next
+	l.nop
+
+goto_reset:
+	l.ori	r2, r2, 0x100
+	l.jr	r2
+	l.nop
+#endif
+
+#warning "END   {{ bootrom.S }}"

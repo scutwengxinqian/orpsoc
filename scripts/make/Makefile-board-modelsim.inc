@@ -174,7 +174,10 @@ $(MODELSIM): modelsim_bench.scr $(TEST_DEFINES_VLG) $(BACKEND_LIB) $(VPI_LIBS) w
 ifneq ($(MGC_NO_VOPT), 1)
 	$(Q)echo; echo "\t### Optimizing testbench ###"; echo
 	$(Q)$(MGC_VOPT_EXE) $(QUIET) $(RTL_TESTBENCH_TOP_NAME) $(VOPT_ARGS) -L $(BACKEND_LIB) -o tb
-endif
+	$(Q)echo; echo "\t### Launching opt simulation ###"; echo
+	$(Q)vsim $(QUIET) $(VSIM_ARGS) -debugdb $(MGC_VSIM_TGT) -L $(BACKEND_LIB)
+else
 	$(Q)echo; echo "\t### Launching simulation ###"; echo
 	$(Q)vsim $(QUIET) $(VSIM_ARGS) $(MGC_VSIM_TGT) -L $(BACKEND_LIB)
+endif
 endif

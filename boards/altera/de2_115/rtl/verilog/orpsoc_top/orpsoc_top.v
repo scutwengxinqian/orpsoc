@@ -92,7 +92,11 @@ module orpsoc_top
 `ifdef LED
 	led_o,
 `endif
-  
+`ifdef FLASH
+	flash_adr_o, flash_dat_io,
+	flash_oe_o, flash_ce_o, flash_we_o,
+	flash_rstn_o, flash_wpn_o, flash_ry_i,
+`endif
 `ifdef ETH0
  `ifdef SMII0
     eth0_smii_sync_pad_o, eth0_smii_tx_pad_o, eth0_smii_rx_pad_i,
@@ -205,7 +209,13 @@ module orpsoc_top
 `ifdef LED
 	output [7:0] led_o;
 `endif
-
+`ifdef FLASH
+	output [22:0] flash_adr_o;
+	inout [7:0]  flash_dat_io;
+	output flash_oe_o, flash_ce_o, flash_we_o;
+	output flash_rstn_o, flash_wpn_o;
+	input flash_ry_i;
+`endif
 `ifdef ETH0
  `ifdef SMII0   
    output 		      eth0_smii_sync_pad_o, eth0_smii_tx_pad_o;
@@ -644,6 +654,20 @@ module orpsoc_top
    wire 				  wbm_eth0_rty_i;
 
    
+   // flash wires
+   wire [31:0] 				  wbs_d_flash_adr_i;
+   wire [7:0] 	  			  wbs_d_flash_dat_i;
+//   wire [3:0] 				  wbs_d_flash_sel_i;
+   wire 				  wbs_d_flash_we_i;
+   wire 				  wbs_d_flash_cyc_i;
+   wire 				  wbs_d_flash_stb_i;
+   wire [2:0] 				  wbs_d_flash_cti_i;
+   wire [1:0] 				  wbs_d_flash_bte_i;   
+   wire [7:0] 	  			  wbs_d_flash_dat_o;   
+   wire 				  wbs_d_flash_ack_o;
+   wire 				  wbs_d_flash_err_o;
+   wire 				  wbs_d_flash_rty_o;
+
 
 
    //
@@ -993,6 +1017,18 @@ module orpsoc_top
       .wbs12_err_o			(wbs_d_led_err_o),
       .wbs12_rty_o			(wbs_d_led_rty_o),
 
+      .wbs13_adr_i			(wbs_d_flash_adr_i),
+      .wbs13_dat_i			(wbs_d_flash_dat_i),
+      .wbs13_we_i			(wbs_d_flash_we_i),
+      .wbs13_cyc_i			(wbs_d_flash_cyc_i),
+      .wbs13_stb_i			(wbs_d_flash_stb_i),
+      .wbs13_cti_i			(wbs_d_flash_cti_i),
+      .wbs13_bte_i			(wbs_d_flash_bte_i),
+      .wbs13_dat_o			(wbs_d_flash_dat_o),
+      .wbs13_ack_o			(wbs_d_flash_ack_o),
+      .wbs13_err_o			(wbs_d_flash_err_o),
+      .wbs13_rty_o			(wbs_d_flash_rty_o),
+
       // Clock, reset inputs
       .wb_clk			(wb_clk),
       .wb_rst			(wb_rst));
@@ -1013,6 +1049,7 @@ module orpsoc_top
    defparam arbiter_bytebus0.slave10_adr = bbus_arb_slave10_adr;
    defparam arbiter_bytebus0.slave11_adr = bbus_arb_slave11_adr;
    defparam arbiter_bytebus0.slave12_adr = bbus_arb_slave12_adr;
+   defparam arbiter_bytebus0.slave13_adr = bbus_arb_slave13_adr;
 
 
 `ifdef GENERIC_JTAG_TAP
@@ -2645,6 +2682,42 @@ module orpsoc_top
 	assign wbs_d_led_rty_o = 0;
 `endif // !`ifdef LED
    
+`ifdef FLASH
+
+wire [7:0] flash_dat_i, flash_dat_o;
+
+wb_flash flash0(
+	// system
+	.clk_i(wb_clk),
+	.nrst_i(~wb_rst),
+	// wishbone slave interface
+	.wb_adr_i(wbs_d_flash_adr_i[22:0]),
+	.wb_dat_o(wbs_d_flash_dat_o),
+	.wb_dat_i(wbs_d_flash_dat_i),
+	.wb_we_i(wbs_d_flash_we_i),
+	.wb_stb_i(wbs_d_flash_stb_i),
+	.wb_cyc_i(wbs_d_flash_cyc_i),
+	.wb_ack_o(wbs_d_flash_ack_o),
+	.wb_err_o(wbs_d_flash_err_o),
+	.wb_rty_o(wbs_d_flash_rty_o),
+	.wb_cti_i(wbs_d_flash_cti_i),
+	.wb_bte_i(wbs_d_flash_bte_i),
+	// flash interface
+	.flash_adr_o(flash_adr_o),
+	.flash_dat_o(flash_dat_o),
+	.flash_dat_i(flash_dat_i),
+	.flash_oe(flash_oe_o),
+	.flash_ce(flash_ce_o),
+	.flash_we(flash_we_o)
+);
+assign flash_dat_io = flash_oe_o ? flash_dat_o: 8'bz;
+assign flash_dat_i = flash_oe_o ? flash_dat_o: flash_dat_io;
+assign flash_rstn_o = ~wb_rst;
+assign flash_wpn_o = 1'b1; // write protection off
+// flash_ry_i is not used
+
+`endif
+
    ////////////////////////////////////////////////////////////////////////
    //
    // OR1200 Interrupt assignment

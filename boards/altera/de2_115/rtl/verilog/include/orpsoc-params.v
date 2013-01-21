@@ -60,6 +60,9 @@ parameter wbs_d_spi2_data_width = 8;
 // LED params
 parameter led_wb_adr = 8'hb8;
 
+// DE2 flash params
+parameter de2_flash_adr = 8'hb9;
+
 // i2c master slave params
 // Slave addresses
 parameter HV0_SADR  = 8'h44;
@@ -186,22 +189,22 @@ parameter dbus_arb_slave2_adr = sdc_wb_adr;
 //                           //
 ///////////////////////////////
 parameter bbus_arb_wb_addr_match_width = 8;
-parameter bbus_arb_wb_num_slaves = 13; // Update this when changing slaves!
+parameter bbus_arb_wb_num_slaves = 14; // Update this when changing slaves!
 // Slave addresses
-parameter bbus_arb_slave0_adr  = uart0_wb_adr;
-parameter bbus_arb_slave1_adr  = gpio0_wb_adr;
-parameter bbus_arb_slave2_adr  = usb0_wb_adr; 
-parameter bbus_arb_slave3_adr  = i2c_0_wb_adr;
-parameter bbus_arb_slave4_adr  = i2c_1_wb_adr;
-parameter bbus_arb_slave5_adr  = i2c_2_wb_adr;
-parameter bbus_arb_slave6_adr  = i2c_3_wb_adr;
-parameter bbus_arb_slave7_adr  = spi0_wb_adr; 
-parameter bbus_arb_slave8_adr  = spi1_wb_adr; 
-parameter bbus_arb_slave9_adr  = spi2_wb_adr; 
-parameter bbus_arb_slave10_adr = flashrom_wb_adr;
-parameter bbus_arb_slave11_adr = usb1_wb_adr;
-parameter bbus_arb_slave12_adr = led_wb_adr;
-parameter bbus_arb_slave13_adr = 0 /* UNASSIGNED */;
+parameter bbus_arb_slave0_adr  = uart0_wb_adr; // 8'h90
+parameter bbus_arb_slave1_adr  = gpio0_wb_adr; // 8'h91
+parameter bbus_arb_slave2_adr  = usb0_wb_adr;  // 8'h9c
+parameter bbus_arb_slave3_adr  = i2c_0_wb_adr; // 8'ha0
+parameter bbus_arb_slave4_adr  = i2c_1_wb_adr; // 8'ha1
+parameter bbus_arb_slave5_adr  = i2c_2_wb_adr; // 8'ha2
+parameter bbus_arb_slave6_adr  = i2c_3_wb_adr; // 8'ha3
+parameter bbus_arb_slave7_adr  = spi0_wb_adr;  // 8'hb0
+parameter bbus_arb_slave8_adr  = spi1_wb_adr;  // 8'hb1
+parameter bbus_arb_slave9_adr  = spi2_wb_adr;  // 8'hb2
+parameter bbus_arb_slave10_adr = flashrom_wb_adr;// 8'hcf
+parameter bbus_arb_slave11_adr = usb1_wb_adr;  // 8'h9d
+parameter bbus_arb_slave12_adr = led_wb_adr;   // 8'hb8
+parameter bbus_arb_slave13_adr = de2_flash_adr;// 8'hb9
 parameter bbus_arb_slave14_adr = 0 /* UNASSIGNED */;
 parameter bbus_arb_slave15_adr = 0 /* UNASSIGNED */;
 parameter bbus_arb_slave16_adr = 0 /* UNASSIGNED */;

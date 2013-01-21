@@ -199,6 +199,12 @@ $(OR1200_PROCESSED_VERILOG_DEFINES): $(OR1200_VERILOG_DEFINES)
 %.flashin: %.bin $(UTILS_BIN2HEX)
 	$(Q)$(UTILS_BIN2HEX) $< 1  -size_word -pad $(HEX_IMAGE_PADDING) > $@
 
+# *.flashin is text file, and *.flashdat is corresponding binary version.
+%.flashdat: %.flashin
+	perl $(SW_ROOT)/utils/hex2bin $< > $@
+	# alternative command:
+	# xxd -cols 1 -plain -revert $< > $@
+
 %.vmem: %.bin $(UTILS_BIN2VMEM)
 	$(Q)$(UTILS_BIN2VMEM) $< > $@
 

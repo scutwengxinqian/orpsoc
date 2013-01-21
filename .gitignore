@@ -50,6 +50,7 @@ doc/*.info
 
 # All object, static libs and compiled elf files
 *.o
+*.so
 *.a
 *.elf
 *.vmem

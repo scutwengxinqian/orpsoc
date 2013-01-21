@@ -42,16 +42,31 @@
 module orpsoc_testbench;
 
    // Clock and reset signal registers
-   wire clk;
-   wire rst_n; // Active LOW
-   reg eth_clk;
+   reg clk = 0;
+   reg rst_n = 1; // Active LOW
+   reg eth_clk = 0;
    
+   always
+     #((`BOARD_CLOCK_PERIOD)/2) clk <= ~clk;
+
 `ifdef ETH_CLK
    always
      #((`ETHERNET_CLOCK_PERIOD)/2) eth_clk <= ~eth_clk;
 `endif
 
    
+   // Reset, ACTIVE LOW
+   initial 
+     begin
+	#1;
+	repeat (32) @(negedge clk)
+	  rst_n <= 1;
+	repeat (32) @(negedge clk)
+	  rst_n <= 0;
+	repeat (32) @(negedge clk)
+	  rst_n <= 1;
+     end
+
    // Include design parameters file
 `include "orpsoc-params.v"
 
