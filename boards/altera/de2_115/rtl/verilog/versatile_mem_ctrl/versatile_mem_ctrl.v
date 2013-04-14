@@ -9,8 +9,8 @@
 
 // Most of these defines have an effect on things in fsm_sdr_16.v
 
-//`define MT48LC32M16   // 64MB part
- // 32MB part
+ // 64MB part
+//`define MT48LC16M16   // 32MB part
 //`define MT48LC4M16    //  8MB part
 
 // Define this to allow indication that a burst read is still going
@@ -27,20 +27,7 @@
 
 
  
-
-
-  
- 
- 
- 
- 
-
-
-`line 37 "sdr_16_defines.v" 0
- //  `ifdef MT48LC16M16
-
- 
-// using 1 of MT48LC16M16
+// using 1 of MT48LC32M16
 // SDRAM data width is 16
   
  
@@ -59,8 +46,17 @@
  
  
 
+ //  `ifdef MT48LC16M16
 
-`line 59 "sdr_16_defines.v" 0
+ 
+
+
+  
+ 
+ 
+ 
+ 
+
  //  `ifdef MT48LC4M16
 
 // LMR
@@ -74,7 +70,8 @@
  
  
  
-`line 72 "sdr_16_defines.v" 2
+
+`line 73 "sdr_16_defines.v" 2
 `line 1 "fsm_wb.v" 1
 module fsm_wb (
 	       stall_i, stall_o,
@@ -192,7 +189,7 @@ module fsm_wb (
    assign sdram_burst_reading_wb_clk = sdram_burst_reading_2;
    
 endmodule
-`line 116 "fsm_wb.v" 2
+`line 117 "fsm_wb.v" 2
 `line 1 "versatile_fifo_async_cmp.v" 1
 //////////////////////////////////////////////////////////////////////
 ////                                                              ////
@@ -235,39 +232,37 @@ endmodule
 //// from http://www.opencores.org/lgpl.shtml                     ////
 ////                                                              ////
 //////////////////////////////////////////////////////////////////////
-
+ 
 module versatile_fifo_async_cmp ( wptr, rptr, fifo_empty, fifo_full, wclk, rclk, rst );
-
+ 
    parameter ADDR_WIDTH = 4;   
    parameter N = ADDR_WIDTH-1;
-
+ 
    parameter Q1 = 2'b00;
    parameter Q2 = 2'b01;
    parameter Q3 = 2'b11;
    parameter Q4 = 2'b10;
-
+ 
    parameter going_empty = 1'b0;
    parameter going_full  = 1'b1;
-   
+ 
    input [N:0]  wptr, rptr;   
    output reg	fifo_empty;
    output       fifo_full;
    input 	wclk, rclk, rst;   
-
+ 
     
    wire direction;
 
  
     
 
-`line 66 "versatile_fifo_async_cmp.v" 0
-
    reg 	direction_set, direction_clr;
-   
+ 
    wire async_empty, async_full;
    wire fifo_full2;
    reg  fifo_empty2;   
-   
+ 
    // direction_set
    always @ (wptr[N:N-1] or rptr[N:N-1])
      case ({wptr[N:N-1],rptr[N:N-1]})
@@ -277,7 +272,7 @@ module versatile_fifo_async_cmp ( wptr, rptr, fifo_empty, fifo_full, wclk, rclk,
        {Q4,Q1} : direction_set <= 1'b1;
        default : direction_set <= 1'b0;
      endcase
-
+ 
    // direction_clear
    always @ (wptr[N:N-1] or rptr[N:N-1] or rst)
      if (rst)
@@ -290,11 +285,11 @@ module versatile_fifo_async_cmp ( wptr, rptr, fifo_empty, fifo_full, wclk, rclk,
 	 {Q1,Q4} : direction_clr <= 1'b1;
 	 default : direction_clr <= 1'b0;
        endcase
-
+ 
  
     dff_sr dff_sr_dir( .aclr(direction_clr), .aset(direction_set), .clock(1'b1), .data(1'b1), .q(direction));
 
-
+ 
  
          
       
@@ -302,15 +297,13 @@ module versatile_fifo_async_cmp ( wptr, rptr, fifo_empty, fifo_full, wclk, rclk,
      
          
 
-`line 106 "versatile_fifo_async_cmp.v" 0
-
-
+ 
    assign async_empty = (wptr == rptr) && (direction==going_empty);
    assign async_full  = (wptr == rptr) && (direction==going_full);
-
+ 
     dff_sr dff_sr_empty0( .aclr(rst), .aset(async_full), .clock(wclk), .data(async_full), .q(fifo_full2));
     dff_sr dff_sr_empty1( .aclr(rst), .aset(async_full), .clock(wclk), .data(fifo_full2), .q(fifo_full));
-
+ 
 /*
    always @ (posedge wclk or posedge rst or posedge async_full)
      if (rst)
@@ -325,36 +318,36 @@ module versatile_fifo_async_cmp ( wptr, rptr, fifo_empty, fifo_full, wclk, rclk,
        {fifo_empty, fifo_empty2} <= 2'b11;
      else
        {fifo_empty,fifo_empty2} <= {fifo_empty2,async_empty};   
-
+ 
 endmodule // async_comp
 `line 130 "versatile_fifo_async_cmp.v" 2
 `line 1 "async_fifo_mq.v" 1
 // async FIFO with multiple queues
-
+ 
 module async_fifo_mq (
     d, fifo_full, write, write_enable, clk1, rst1,
     q, fifo_empty, read, read_enable, clk2, rst2
 );
-
+ 
 parameter a_hi_size = 4;
 parameter a_lo_size = 4;
 parameter nr_of_queues = 16;
 parameter data_width = 36;
-
+ 
 input [data_width-1:0] d;
 output [0:nr_of_queues-1] fifo_full;
 input                     write;
 input  [0:nr_of_queues-1] write_enable;
 input clk1;
 input rst1;
-
+ 
 output [data_width-1:0] q;
 output [0:nr_of_queues-1] fifo_empty;
 input                     read;
 input  [0:nr_of_queues-1] read_enable;
 input clk2;
 input rst2;
-
+ 
 wire [a_lo_size-1:0]  fifo_wadr_bin[0:nr_of_queues-1];
 wire [a_lo_size-1:0]  fifo_wadr_gray[0:nr_of_queues-1];
 wire [a_lo_size-1:0]  fifo_radr_bin[0:nr_of_queues-1];
@@ -363,10 +356,10 @@ reg [a_lo_size-1:0] wadr;
 reg [a_lo_size-1:0] radr;
 reg [data_width-1:0] wdata;
 wire [data_width-1:0] wdataa[0:nr_of_queues-1];
-
+ 
 genvar i;
 integer j,k,l;
-
+ 
 function [a_lo_size-1:0] onehot2bin;
 input [0:nr_of_queues-1] a;
 integer i;
@@ -378,24 +371,24 @@ begin
     end
 end
 endfunction
-
+ 
 generate
     for (i=0;i<nr_of_queues;i=i+1) begin : fifo_adr
-        
+ 
         gray_counter wadrcnt (
             .cke(write & write_enable[i]),
             .q(fifo_wadr_gray[i]),
             .q_bin(fifo_wadr_bin[i]),
             .rst(rst1),
             .clk(clk1));
-        
+ 
         gray_counter radrcnt (
             .cke(read & read_enable[i]),
             .q(fifo_radr_gray[i]),
             .q_bin(fifo_radr_bin[i]),
             .rst(rst2),
             .clk(clk2));
-        
+ 
 	versatile_fifo_async_cmp
             #(.ADDR_WIDTH(a_lo_size))
             egresscmp ( 
@@ -406,10 +399,10 @@ generate
 		.wclk(clk1), 
 		.rclk(clk2), 
 		.rst(rst1));
-        
+ 
     end
 endgenerate
-
+ 
 // and-or mux write address
 always @*
 begin
@@ -418,7 +411,7 @@ begin
         wadr = (fifo_wadr_bin[j] & {a_lo_size{write_enable[j]}}) | wadr;
     end
 end
-
+ 
 // and-or mux read address
 always @*
 begin
@@ -427,7 +420,7 @@ begin
         radr = (fifo_radr_bin[k] & {a_lo_size{read_enable[k]}}) | radr;
     end
 end
-
+ 
 vfifo_dual_port_ram_dc_sw # ( .DATA_WIDTH(data_width), .ADDR_WIDTH(a_hi_size+a_lo_size))
     dpram (
     .d_a(d),
@@ -437,7 +430,7 @@ vfifo_dual_port_ram_dc_sw # ( .DATA_WIDTH(data_width), .ADDR_WIDTH(a_hi_size+a_l
     .q_b(q),
     .adr_b({onehot2bin(read_enable),radr}),
     .clk_b(clk2) );
-
+ 
 endmodule
 `line 111 "async_fifo_mq.v" 2
 `line 1 "delay.v" 1
@@ -472,7 +465,8 @@ module delay (d, q, clk, rst);
 endmodule //delay
 
    
-`line 32 "delay.v" 2
+
+`line 33 "delay.v" 2
 `line 1 "codec.v" 1
 `timescale 1ns/1ns
 module encode (
@@ -598,7 +592,8 @@ assign fifo_we_2 = (fifo_sel_domain == 2'b10) ? fifo_sel : {16{1'b0}};
 assign fifo_we_3 = (fifo_sel_domain == 2'b11) ? fifo_sel : {16{1'b0}};
 
 endmodule
-`line 125 "codec.v" 2
+
+`line 126 "codec.v" 2
 `line 1 "gray_counter.v" 1
 //////////////////////////////////////////////////////////////////////
 ////                                                              ////
@@ -675,7 +670,8 @@ module gray_counter ( cke, q, q_bin, rst, clk);
    assign q_bin = qi;
 
 endmodule
-`line 76 "gray_counter.v" 2
+
+`line 77 "gray_counter.v" 2
 `line 1 "egress_fifo.v" 1
 // async FIFO with multiple queues, multiple data
  
@@ -1041,17 +1037,14 @@ endmodule
    
 
 
-
-`line 365 "egress_fifo.v" 0
  // !`ifdef ORIGINAL_EGRESS_FIFO
-`line 366 "egress_fifo.v" 2
+
+`line 367 "egress_fifo.v" 2
 `line 1 "versatile_fifo_dual_port_ram_dc_sw.v" 1
 // true dual port RAM, sync
 
  
 	 
-
-`line 5 "versatile_fifo_dual_port_ram_dc_sw.v" 0
 
 module vfifo_dual_port_ram_dc_sw
   (
@@ -1080,7 +1073,8 @@ module vfifo_dual_port_ram_dc_sw
    adr_b_reg <= adr_b;   
    assign q_b = ram[adr_b_reg];
 endmodule 
-`line 33 "versatile_fifo_dual_port_ram_dc_sw.v" 2
+
+`line 34 "versatile_fifo_dual_port_ram_dc_sw.v" 2
 `line 1 "dff_sr.v" 1
 //////////////////////////////////////////////////////////////////////
 ////                                                              ////
@@ -1123,15 +1117,15 @@ endmodule
 //// from http://www.opencores.org/lgpl.shtml                     ////
 ////                                                              ////
 //////////////////////////////////////////////////////////////////////
-
+ 
 module dff_sr ( aclr, aset, clock, data, q);
-
+ 
     input	  aclr;
     input	  aset;
     input	  clock;
     input	  data;
     output reg	  q;
-
+ 
    always @ (posedge clock or posedge aclr or posedge aset)
      if (aclr)
        q <= 1'b0;
@@ -1139,7 +1133,7 @@ module dff_sr ( aclr, aset, clock, data, q);
        q <= 1'b1;
      else
        q <= data;
-
+ 
 endmodule
 `line 60 "dff_sr.v" 2
 `line 1 "ref_counter.v" 1
@@ -1268,6 +1262,7 @@ endmodule
 `line 2 "fsm_sdr_16.v" 0
 `line 1 "sdr_16_defines.v" 1
 //
+`line 2 "sdr_16_defines.v" 0
 // Specify either type of memory
 // or
 // BA_SIZE, ROW_SIZE, COL_SIZE and SDRAM_DATA_WIDTH
@@ -1277,8 +1272,8 @@ endmodule
 
 // Most of these defines have an effect on things in fsm_sdr_16.v
 
-//`define MT48LC32M16   // 64MB part
- // 32MB part
+ // 64MB part
+//`define MT48LC16M16   // 32MB part
 //`define MT48LC4M16    //  8MB part
 
 // Define this to allow indication that a burst read is still going
@@ -1295,20 +1290,7 @@ endmodule
 
 
  
-
-
-  
- 
- 
- 
- 
-
-
-`line 37 "sdr_16_defines.v" 0
- //  `ifdef MT48LC16M16
-
- 
-// using 1 of MT48LC16M16
+// using 1 of MT48LC32M16
 // SDRAM data width is 16
   
  
@@ -1327,8 +1309,17 @@ endmodule
  
  
 
+ //  `ifdef MT48LC16M16
 
-`line 59 "sdr_16_defines.v" 0
+ 
+
+
+  
+ 
+ 
+ 
+ 
+
  //  `ifdef MT48LC4M16
 
 // LMR
@@ -1342,7 +1333,8 @@ endmodule
  
  
  
-`line 72 "sdr_16_defines.v" 2
+
+`line 73 "sdr_16_defines.v" 2
 `line 2 "fsm_sdr_16.v" 0
 
 module fsm_sdr_16 (
@@ -1361,7 +1353,7 @@ module fsm_sdr_16 (
     parameter col_size = 9;   
     */
    
-   input [2+13+9-1:0] adr_i;
+   input [2+13+10-1:0] adr_i;
    input 				 we_i;
    input [1:0] 				 bte_i;
    input [2:0] 				 cti_i;
@@ -1390,7 +1382,7 @@ module fsm_sdr_16 (
 
    wire [2-1:0] 			 bank;
    wire [13-1:0] 			 row;
-   wire [9-1:0] 			 col;
+   wire [10-1:0] 			 col;
    wire [12:0] 				 col_reg_a10_fix;
    reg [0:31] 				 shreg;
    wire 				 stall; // active if write burst need data
@@ -1401,7 +1393,7 @@ module fsm_sdr_16 (
    // adr_reg {ba,row,col,we}
    reg [1:0] 				 ba_reg;  
    reg [13-1:0] 			 row_reg;
-   reg [9-1:0] 			 col_reg;
+   reg [10-1:0] 			 col_reg;
    reg 					 we_reg;
    reg [1:0] 				 bte_reg;
    reg [2:0] 				 cti_reg;
@@ -1456,19 +1448,19 @@ module fsm_sdr_16 (
    assign debug_state = state;
 
    function [12:0] a10_fix;
-      input [9-1:0] 		 a;
+      input [10-1:0] 		 a;
       integer 				 i;
       begin
 	 for (i=0;i<13;i=i+1) begin
             if (i<10)
-              if (i<9)
+              if (i<10)
                 a10_fix[i] = a[i];
               else
                 a10_fix[i] = 1'b0;
             else if (i==10)
               a10_fix[i] = 1'b0;
             else
-              if (i<9)
+              if (i<10)
                 a10_fix[i] = a[i-1];
               else
                 a10_fix[i] = 1'b0;
@@ -1536,8 +1528,6 @@ module fsm_sdr_16 (
 		     
 		     
 
-`line 193 "fsm_sdr_16.v" 0
-
 		 else if (fifo_empty)         
 		   next = 3'b110;
 	      end
@@ -1552,8 +1542,6 @@ module fsm_sdr_16 (
 	      
 	      
 	        
-
-`line 208 "fsm_sdr_16.v" 0
 	  
             else             
 	      next = 3'b110;
@@ -1566,13 +1554,9 @@ module fsm_sdr_16 (
                 
                 
 
-`line 219 "fsm_sdr_16.v" 0
-
  
                 
                 
-
-`line 223 "fsm_sdr_16.v" 0
 
             else
               next = 3'b111;
@@ -1616,7 +1600,7 @@ module fsm_sdr_16 (
            {open_ba,open_row[0],open_row[1],open_row[2],open_row[3]} <= 
                                                   {4'b0000,{13*4{1'b0}}};
            {ba_reg,row_reg,col_reg,we_reg,cti_reg,bte_reg} <= 
-                     {2'b00, {13{1'b0}}, {9{1'b0}}, 1'b0,3'b000, 2'b00 };
+                     {2'b00, {13{1'b0}}, {10{1'b0}}, 1'b0,3'b000, 2'b00 };
 	end else begin
            {ba,a,cmd} <= {2'b00,13'd0,cmd_nop};
            dqm <= 2'b11;
@@ -1681,14 +1665,10 @@ module fsm_sdr_16 (
 			       
 				     
           
-`line 330 "fsm_sdr_16.v" 0
-
            
 			      
 				     
           
-`line 334 "fsm_sdr_16.v" 0
-
 			 endcase // case (bte_reg)
 		       else
 			 {ba,a} <= {ba_reg,col_reg_a10_fix};
@@ -1764,12 +1744,11 @@ module fsm_sdr_16 (
    
       
 
-`line 409 "fsm_sdr_16.v" 0
-
    
 
 endmodule
-`line 413 "fsm_sdr_16.v" 2
+
+`line 414 "fsm_sdr_16.v" 2
 `line 1 "versatile_mem_ctrl_wb.v" 1
 `timescale 1ns/1ns
 module versatile_mem_ctrl_wb 
@@ -1928,19 +1907,18 @@ egress_fifo # (
 assign wb_dat_o_v = {nr_of_wb_ports{wb_dat_o}};
 
 endmodule
-`line 157 "versatile_mem_ctrl_wb.v" 2
+`line 158 "versatile_mem_ctrl_wb.v" 2
 `line 1 "versatile_mem_ctrl_top.v" 1
 `timescale 1ns/1ns
  
   
-
-`line 4 "versatile_mem_ctrl_top.v" 0
 
  
   
 `line 6 "versatile_mem_ctrl_top.v" 0
 `line 1 "sdr_16_defines.v" 1
 //
+`line 2 "sdr_16_defines.v" 0
 // Specify either type of memory
 // or
 // BA_SIZE, ROW_SIZE, COL_SIZE and SDRAM_DATA_WIDTH
@@ -1950,8 +1928,8 @@ endmodule
 
 // Most of these defines have an effect on things in fsm_sdr_16.v
 
-//`define MT48LC32M16   // 64MB part
- // 32MB part
+ // 64MB part
+//`define MT48LC16M16   // 32MB part
 //`define MT48LC4M16    //  8MB part
 
 // Define this to allow indication that a burst read is still going
@@ -1968,20 +1946,7 @@ endmodule
 
 
  
-
-
-  
- 
- 
- 
- 
-
-
-`line 37 "sdr_16_defines.v" 0
- //  `ifdef MT48LC16M16
-
- 
-// using 1 of MT48LC16M16
+// using 1 of MT48LC32M16
 // SDRAM data width is 16
   
  
@@ -2000,8 +1965,17 @@ endmodule
  
  
 
+ //  `ifdef MT48LC16M16
 
-`line 59 "sdr_16_defines.v" 0
+ 
+
+
+  
+ 
+ 
+ 
+ 
+
  //  `ifdef MT48LC4M16
 
 // LMR
@@ -2015,7 +1989,8 @@ endmodule
  
  
  
-`line 72 "sdr_16_defines.v" 2
+
+`line 73 "sdr_16_defines.v" 2
 `line 6 "versatile_mem_ctrl_top.v" 0
 
 
@@ -2040,8 +2015,6 @@ module versatile_mem_ctrl
        
        
             
-
-`line 29 "versatile_mem_ctrl_top.v" 0
 
    // SDRAM signals
    sdram_clk, sdram_rst
@@ -2115,8 +2088,6 @@ module versatile_mem_ctrl
      			       
      			       
     			       
-
-`line 102 "versatile_mem_ctrl_top.v" 0
 
    input 			       sdram_clk, sdram_rst;
 
@@ -2336,9 +2307,7 @@ module versatile_mem_ctrl
    //ref_counter ref_counter0( .zq(ref_cnt_zero), .rst(sdram_rst), .clk(sdram_clk));
    ref_counter
       
-      
-
-`line 322 "versatile_mem_ctrl_top.v" 0
+     #(.length(9), .wrap_value(67))
    
    ref_counter0( .zq(ref_cnt_zero), .rst(sdram_rst), .clk(sdram_clk));
    
@@ -2363,7 +2332,7 @@ module versatile_mem_ctrl
    // SDR SDRAM 16 FSM
    fsm_sdr_16 fsm_sdr_16_0 
      (
-      .adr_i({fifo_dat_o[0][2+13+9+6-2:6],1'b0}),
+      .adr_i({fifo_dat_o[0][2+13+10+6-2:6],1'b0}),
       .we_i(fifo_dat_o[0][5]),
       .bte_i(fifo_dat_o[0][4:3]),
       .cti_i(fifo_dat_o[0][2:0]),
@@ -2681,6 +2650,34 @@ module versatile_mem_ctrl
       
 
 
+`line 663 "versatile_mem_ctrl_top.v" 0
+
+`line 663 "versatile_mem_ctrl_top.v" 0
+
+`line 663 "versatile_mem_ctrl_top.v" 0
+
+`line 663 "versatile_mem_ctrl_top.v" 0
+
+`line 663 "versatile_mem_ctrl_top.v" 0
+
+`line 663 "versatile_mem_ctrl_top.v" 0
+
+`line 663 "versatile_mem_ctrl_top.v" 0
+
+`line 663 "versatile_mem_ctrl_top.v" 0
+
+`line 663 "versatile_mem_ctrl_top.v" 0
+
+
+
+
+
+
+
+
+
+
+
 
    
         
@@ -2759,9 +2756,8 @@ module versatile_mem_ctrl
       
       
 
-
-`line 752 "versatile_mem_ctrl_top.v" 0
  //  `ifdef DDR_16
    
 endmodule // wb_sdram_ctrl_top
-`line 755 "versatile_mem_ctrl_top.v" 2
+
+`line 756 "versatile_mem_ctrl_top.v" 2

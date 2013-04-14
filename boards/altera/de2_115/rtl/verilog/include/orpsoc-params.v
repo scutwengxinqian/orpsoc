@@ -176,10 +176,10 @@ parameter ibus_arb_slave1_adr = 4'h0; // Main memory (SDRAM/FPGA SRAM)
 //                       //
 ///////////////////////////
 // Has auto foward to last slave when no address hits
-parameter dbus_arb_wb_addr_match_width = 8;
+parameter dbus_arb_wb_addr_match_width = 6;
 parameter dbus_arb_wb_num_slaves = 4;
 // Slave addresses
-parameter dbus_arb_slave0_adr = 4'h0; // Main memory (SDRAM/FPGA SRAM)
+parameter dbus_arb_slave0_adr = 0; // Main memory (SDRAM/FPGA SRAM)
 parameter dbus_arb_slave1_adr = eth0_wb_adr; // Ethernet 0
 parameter dbus_arb_slave2_adr = sdc_wb_adr;
 

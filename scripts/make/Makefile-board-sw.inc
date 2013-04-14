@@ -12,9 +12,7 @@ COMMON_SW_TEST_DIR=$(COMMON_SW_DIR)/tests/$(TEST_MODULE)/sim
 SW_TEST_DIR=$(shell if [ -e $(BOARD_SW_TEST_DIR)/$(TEST).[cS] ]; then echo $(BOARD_SW_TEST_DIR); else echo $(COMMON_SW_TEST_DIR); fi)
 
 print-test-sw-dir:
-	@echo; echo "\tTest software is in the following path"; echo;
-	@echo $(BOARD_SW_DIR); echo;
-	@echo $(BOARD_SW_TEST_DIR); echo;
+	@echo; echo -e "\tTest software is in the following path"; echo;
 	@echo $(SW_TEST_DIR); echo;
 
 print-sw-tests:

@@ -59,5 +59,6 @@ $(SW_TEST_DIR)/$(TEST).dis:
 # Clean rules
 #
 
+.PHONY:clean-sim-test-sw
 clean-sim-test-sw:
 	$(Q)if [ -e $(SIM_SW_IMAGE) ]; then unlink $(SIM_SW_IMAGE); fi

@@ -55,11 +55,11 @@ bootrom: $(BOOTROM_VERILOG)
 
 $(BOOTROM_VERILOG): $(BOOTROM_SRC)
 	$(Q)echo; echo "\t### Generating bootup ROM ###"; echo
-	$(Q)$(MAKE) -C $(BOOTROM_SW_DIR) $(BOOTROM_FILE)
+	$(Q) $(MAKE) -C $(BOOTROM_SW_DIR) $(BOOTROM_FILE)
 
 clean-bootrom:
 	$(Q)echo; echo "\t### Cleaning bootup ROM ###"; echo
-	$(Q)$(MAKE) -C $(BOOTROM_SW_DIR) clean
+	$(Q) $(MAKE) -C $(BOOTROM_SW_DIR) clean
 
 include $(PROJECT_ROOT)/scripts/make/Makefile-board-rtlmodules.inc
 

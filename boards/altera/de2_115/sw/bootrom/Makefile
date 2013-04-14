@@ -19,7 +19,7 @@ bootrom.v: $(SW_ROOT)/bootrom/bootrom.v
 export BOARD
 
 $(SW_ROOT)/bootrom/bootrom.v:
-	$(Q)$(MAKE) -C $(SW_ROOT)/bootrom bootrom.v
+	$(Q) $(MAKE) -C $(SW_ROOT)/bootrom bootrom.v
 
 clean:
 	$(Q)rm -f *.o *.bin *.hex *.in *.dis *.v

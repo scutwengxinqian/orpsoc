@@ -13,11 +13,11 @@ COMMON_BENCH_VERILOG_SRC_FILTERED=$(filter-out $(BOARD_BENCH_VERILOG_SRC_FILES) 
 COMMON_BENCH_VERILOG_SRC=$(addprefix $(COMMON_BENCH_VERILOG_DIR)/, $(COMMON_BENCH_VERILOG_SRC_FILTERED))
 
 print-board-bench-src:
-	$(Q)echo "\tBoard bench verilog source"; \
+	$(Q)echo -e "\tBoard bench verilog source"; \
 	echo $(BOARD_BENCH_VERILOG_SRC)
 
 print-common-bench-src:
-	$(Q)echo "\Common bench verilog source"; \
+	$(Q)echo -e "\tCommon bench verilog source"; \
 	echo $(COMMON_BENCH_VERILOG_SRC)
 
 # Testbench source subdirectory detection (exclude include, we always use 

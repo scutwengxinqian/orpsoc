@@ -18,3 +18,8 @@ jp-io-vpi.so: $(SRCDIR)jp-io-vpi.c Makefile
 	$(CC) -shared -Bsymbolic  -o jp-io-vpi.so jp-io-vpi.o -lc
 
 vpi: jp-io-vpi.so Makefile
+
+.PHONY:clean
+clean:
+	rm -f *.o *.so
+

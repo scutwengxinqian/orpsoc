@@ -57,3 +57,6 @@ doc/*.info
 sw/utils/bin2hex
 sw/utils/bin2vmem
 
+# makepp cache file
+.makepp
+

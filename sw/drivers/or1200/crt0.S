@@ -72,7 +72,10 @@ symbol:
 	/* Clear timer  */
 	l.mtspr r0, r0, SPR_TTMR
 	/* Early Stack initilization */
-	LOAD_SYMBOL_2_GPR(r1, _stack)
+//	LOAD_SYMBOL_2_GPR(r1, _stack)
+	/* STACK_POSITION defined in board.h */
+	l.movhi r1, hi(STACK_POSITION)
+	l.ori   r1, r1, lo(STACK_POSITION)
 	l.addi  r2, r0, -3
 	l.and   r1, r1, r2
 

@@ -7,5 +7,5 @@ DESIGN_DEFINES ?=$(shell cat $(PROJECT_VERILOG_DEFINES) | sed s://.*::g | sed s:
 # Rule to look at what defines are being extracted from main file
 print-defines:
 	@echo echo; echo -e "\t### Design defines ###"; echo;
-	@echo -e "\tParsing "$(PROJECT_VERILOG_DEFINES)" and exporting:"
+	@echo -e "Parsing "$(PROJECT_VERILOG_DEFINES)" and exporting:"
 	@echo $(DESIGN_DEFINES)

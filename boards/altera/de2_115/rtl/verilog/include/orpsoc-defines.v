@@ -53,17 +53,17 @@
 //`define SPI0
 //`define SPI1
 //`define SPI2
-`define I2C0
+//`define I2C0
 //`define I2C1
 //`define I2C2
 //`define I2C3
 //`define USB0
 //`define USB1
-`define GPIO0
-`define ETH0
+//`define GPIO0
+//`define ETH0
 //`define SDC_CONTROLLER
-`define LED
-`define FLASH
+//`define LED
+//`define FLASH
 
 // end of included module defines - keep this comment line here, scripts depend on it!!
 

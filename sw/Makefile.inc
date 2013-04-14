@@ -267,7 +267,6 @@ distclean: clean
 	$(Q)for testssubdir in $(SW_TESTS_SUBDIRS); do $(MAKE) -C $$testssubdir clean; done
 	$(Q)for dir in $(SW_DRIVER_PATHS); do $(MAKE) -C $$dir clean; done
 	$(Q)for dir in `ls $(SW_APPS_PATH)`; do $(MAKE) -C $(SW_ROOT)/apps/$$dir clean; done
-	$(Q)for dir in `ls $(SW_APPS_PATH)`; do $(MAKE) -C $(SW_ROOT)/apps/$$dir clean; done
 	$(Q)$(MAKE) -C $(SW_ROOT)/lib clean
 	$(Q)$(MAKE) -C $(SW_ROOT)/bootrom clean
 	$(Q)rm -f $(PROCESSED_DEFINES)

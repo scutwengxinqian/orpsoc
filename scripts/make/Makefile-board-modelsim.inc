@@ -43,7 +43,8 @@ endif
 ifeq ($(GUI), 1)
 VSIM_ARGS+= -suppress 7 -suppress 3009 -suppress 8598 -novopt -do "set StdArithNoWarnings 1"
 else
-VSIM_ARGS+=  -suppress 7 -suppress 3009 -suppress 8598 -c $(QUIET) -do "set StdArithNoWarnings 1; run -all; exit"
+VSIM_ARGS+= -suppress 7 -suppress 3009 -suppress 8598 -c $(QUIET) -do "set StdArithNoWarnings 1;$(VERDI_CMD); run -all; exit"
+# fsdbDumpvars;  run -all; exit
 endif
 
 # VPI debugging interface set up
@@ -141,6 +142,13 @@ work: modelsim_dut.scr
 		vcom -93 $(QUIET) $(RTL_VHDL_SRC); \
 	fi
 
+verdi_rtl:modelsim_dut.scr
+	vericom -lib altera_lib -f modelsim_backend.scr
+	vericom $(BENCH_TOP_FILE) -f modelsim_bench.scr
+	vericom $(DUT_TOP_FILE) -f modelsim_dut.scr
+	vlmap altera_mf altera_lib
+	if [ "$(RTL_VHDL_SRC)" != "" ]; then vhdlcom $(RTL_VHDL_SRC); fi
+	verdi -top $(RTL_TESTBENCH_TOP_NAME) -L altera_lib -ssy
 #
 # Run rule, one for each vendor
 #
